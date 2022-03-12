@@ -1,5 +1,9 @@
 version: '3'
+volumes:
+  data:
 services:
   languages:
-    build: .
+    volumes:
+      - data:/root/dev
     tty: true
+    build: .
