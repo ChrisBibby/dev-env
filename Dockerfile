@@ -1,9 +1,10 @@
 # current lts
 FROM ubuntu:20.04
 
-## update image
+# update image
 RUN apt-get update && apt-get -y install sudo && apt-get install wget -y && apt-get install curl -y
 
+# set shell
 SHELL ["/bin/bash", "-c"]
 
 # install nvm

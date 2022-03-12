@@ -1,0 +1,5 @@
+version: '3'
+services:
+  languages:
+    build: .
+    tty: true
