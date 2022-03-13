@@ -3,7 +3,9 @@ volumes:
   data:
 services:
   languages:
+    build: 
+      context: .
     volumes:
-      - data:/root/dev
+      - data:/home/developer/dev
     tty: true
-    build: .
+

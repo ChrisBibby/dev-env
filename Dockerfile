@@ -1,32 +1,36 @@
 # current ubuntu lts
 FROM ubuntu:20.04
 
-# setup directory for .ssh keys
-WORKDIR $HOME/
-RUN mkdir -p $HOME/dev/.ssh && ln -s $HOME/dev/.ssh $HOME/.ssh
+ARG USER=developer
 
+USER root
 # update & install packages
 RUN apt-get update && apt-get upgrade && \ 
-    apt-get -y install sudo && \
-    apt-get install curl -y && \
-    apt-get install unzip && \
-    apt-get install zip && \
-    apt-get -y install git && \
-    apt-get -y install tig && \
-    apt-get clean
+    apt-get install --no-install-recommends -y curl unzip zip git tig sudo ca-certificates && \
+    apt-get clean 
+
+RUN useradd -m ${USER} -s /bin/bash && echo "${USER}:${USER}" | chpasswd && adduser ${USER} sudo && \
+    echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+# switch to non-root user
+USER ${USER}
+WORKDIR /home/${USER}
+
+# setup directory for .ssh keys
+RUN mkdir -p $HOME/dev/.ssh && ln -s $HOME/dev/.ssh $HOME/.ssh
 
 # set shell
 SHELL ["/bin/bash", "-c"]
 
 # install nvm - node 16
-RUN sudo curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash && \
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash && \
     export NVM_DIR="${HOME}/.nvm" && \
     [ -s "$NVM_DIR/nvm.sh" ] && \ 
     \. "$NVM_DIR/nvm.sh" && \
     nvm install 16
 
 # install sdkman - maven, gradle & java 17
-RUN sudo curl -s "https://get.sdkman.io" | bash && \
+RUN curl -s "https://get.sdkman.io" | bash && \
     source "$HOME/.sdkman/bin/sdkman-init.sh" && \
     sed -i 's/sdkman_curl_connect_timeout=7/sdkman_curl_connect_timeout=20/g' $HOME/.sdkman/etc/config && \
     sed -i 's/sdkman_curl_max_time=10/sdkman_curl_max_time=0/g' $HOME/.sdkman/etc/config && \
