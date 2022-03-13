@@ -3,6 +3,12 @@ FROM ubuntu:20.04
 
 ARG USER=developer
 
+# versions
+ARG GRADLE_VERSION=7.4.1
+ARG JAVA_VERSION=17.0.2-zulu 
+ARG MAVEN_VERSION=3.8.4
+ARG NODE_VERSION=16
+
 USER root
 # update & install packages
 RUN apt-get update && apt-get upgrade && \ 
@@ -27,7 +33,7 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | b
     export NVM_DIR="${HOME}/.nvm" && \
     [ -s "$NVM_DIR/nvm.sh" ] && \ 
     \. "$NVM_DIR/nvm.sh" && \
-    nvm install 16
+    nvm install ${NODE_VERSION}
 
 # install sdkman - maven, gradle & java 17
 RUN curl -s "https://get.sdkman.io" | bash && \
@@ -35,9 +41,9 @@ RUN curl -s "https://get.sdkman.io" | bash && \
     sed -i 's/sdkman_curl_connect_timeout=7/sdkman_curl_connect_timeout=20/g' $HOME/.sdkman/etc/config && \
     sed -i 's/sdkman_curl_max_time=10/sdkman_curl_max_time=0/g' $HOME/.sdkman/etc/config && \
     sdk update && \
-    sdk install java 17.0.2-zulu && \
-    sdk install maven 3.8.4 && \
-    sdk install gradle 7.4.1
+    sdk install java ${JAVA_VERSION} && \
+    sdk install maven ${MAVEN_VERSION} && \
+    sdk install gradle ${GRADLE_VERSION}
 
 # startup
 ENTRYPOINT bash
