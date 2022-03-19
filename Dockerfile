@@ -12,7 +12,7 @@ ARG NODE_VERSION=16
 USER root
 # update & install packages
 RUN apt-get update && apt-get upgrade && \ 
-    apt-get install --no-install-recommends -y curl unzip zip git tig sudo ca-certificates && \
+    apt-get install --no-install-recommends -y curl unzip zip git tig sudo ca-certificates ssh && \
     apt-get clean 
 
 RUN useradd -m ${USER} -s /bin/bash && echo "${USER}:${USER}" | chpasswd && adduser ${USER} sudo && \
@@ -33,7 +33,8 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | b
     export NVM_DIR="${HOME}/.nvm" && \
     [ -s "$NVM_DIR/nvm.sh" ] && \ 
     \. "$NVM_DIR/nvm.sh" && \
-    nvm install ${NODE_VERSION}
+    nvm install ${NODE_VERSION} && \
+    npm i -g yarn
 
 # install sdkman - maven, gradle & java 17
 RUN curl -s "https://get.sdkman.io" | bash && \
