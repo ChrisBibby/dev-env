@@ -2,6 +2,8 @@
 FROM ubuntu:20.04
 
 ARG USER=developer
+ARG GROUP=developer
+ARG UID=4999
 
 # versions
 ARG GRADLE_VERSION=7.4.1
@@ -15,7 +17,7 @@ RUN apt-get update && apt-get upgrade && \
     apt-get install --no-install-recommends -y curl unzip zip git tig sudo ca-certificates ssh && \
     apt-get clean 
 
-RUN useradd -m ${USER} -s /bin/bash && echo "${USER}:${USER}" | chpasswd && adduser ${USER} sudo && \
+RUN useradd -u ${UID} -m ${USER} -s /bin/bash && echo "${USER}:${GROUP}" | chpasswd && adduser ${USER} sudo && \
     echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 # switch to non-root user
