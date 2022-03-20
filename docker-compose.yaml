@@ -1,6 +1,7 @@
-version: '3'
+version: '3.8'
 volumes:
   data:
+  mongo-data:
 services:
   languages:
     build: 
@@ -8,4 +9,13 @@ services:
     volumes:
       - data:/home/developer/dev
     tty: true
-
+  mongodb: # connection string: mongodb://developer:developer@localhost:27017
+    image: mongo:5.0.6
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: developer
+      MONGO_INITDB_ROOT_PASSWORD: developer
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
